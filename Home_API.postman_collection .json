@@ -1,0 +1,719 @@
+{
+	"info": {
+		"_postman_id": "28e6dc88-ddae-4b81-afee-bf67430ff645",
+		"name": "Home_API",
+		"description": "Postman collection for F1 API testing (Home Page API).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50442668",
+		"_collection_link": "https://mohamedyasser1eng1-9479221.postman.co/workspace/Mohamed-Yasser's-Workspace~35f18da5-2938-4a67-8b8d-da39fa2b91c6/collection/50442668-28e6dc88-ddae-4b81-afee-bf67430ff645?action=share&source=collection_link&creator=50442668"
+	},
+	"item": [
+		{
+			"name": "Get Seasons",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"// 1) Status code\r",
+							"pm.test(\"Status code is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Seasons is an array\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.championships).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Seasons array is not empty\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.championships.length).to.be.above(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/seasons",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"seasons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the free practice 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Status Code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Response is JSON or at least not empty\r",
+							"pm.test(\"Response body is not empty\", function () {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"// Optional: check if it contains results key (لو API بتاعك فيه key معين)\r",
+							"pm.test(\"Response has results\", function () {\r",
+							"    let body;\r",
+							"    try {\r",
+							"        body = pm.response.json();\r",
+							"        pm.expect(body).to.be.an(\"object\");\r",
+							"    } catch (e) {\r",
+							"        pm.expect.fail(\"Response is not valid JSON\");\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/2024/1/fp1",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2024",
+						"1",
+						"fp1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the latest free practice 1 of the current season",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check status code\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Response not empty\r",
+							"pm.test(\"Response body is not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"// Check JSON validity\r",
+							"pm.test(\"Response is valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"// Check if response contains session data\r",
+							"pm.test(\"Response contains FP1 data\", () => {\r",
+							"    const body = pm.response.json();\r",
+							"    // غالباً الـ API بيرجع sessions / results / events\r",
+							"    pm.expect(body).to.be.an(\"object\");\r",
+							"    pm.expect(Object.keys(body).length).to.be.above(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/current/last/fp1",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"current",
+						"last",
+						"fp1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the free practice 2 of the given round",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"pm.test(\"Body is not empty\", () => pm.expect(pm.response.text().length).to.be.above(0));\r",
+							"pm.test(\"Is valid JSON\", () => pm.response.to.be.json);\r",
+							"pm.test(\"FP2 data exists\", () => {\r",
+							"    const body = pm.response.json();\r",
+							"    pm.expect(body).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/2024/1/fp2",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2024",
+						"1",
+						"fp2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the latest free practice 2 of the current season.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"pm.test(\"Body is not empty\", () => pm.expect(pm.response.text().length).to.be.above(0));\r",
+							"pm.test(\"Is valid JSON\", () => pm.response.to.be.json);\r",
+							"pm.test(\"Current FP2 data\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/current/last/fp2",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"current",
+						"last",
+						"fp2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the free practice 3 of the given round.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"FP3 data exists\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/2024/1/fp3",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2024",
+						"1",
+						"fp3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the latest free practice 3 of the current season.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Current FP3 data\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/current/last/fp3",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"current",
+						"last",
+						"fp3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the qualifying of the given round.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Qualifying results exist\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/2024/1/qualy",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2024",
+						"1",
+						"qualy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the latest qualy of the current season.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Current Qualifying data\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/current/last/qualy",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"current",
+						"last",
+						"qualy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the race of the given round.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Race results exist\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/2024/1/race",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2024",
+						"1",
+						"race"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the latest race of the current season.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Current Race data\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/current/last/race",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"current",
+						"last",
+						"race"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the sprint qualy of the given round.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Sprint Qualy data exists\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/2024/5/sprint/qualy",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2024",
+						"5",
+						"sprint",
+						"qualy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "results of the sprint race of the given round.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(\"Body not empty\", () => {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Valid JSON\", () => {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Sprint Race data exists\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://f1api.dev/api/2024/5/sprint/race",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2024",
+						"5",
+						"sprint",
+						"race"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

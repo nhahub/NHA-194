@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "dbd239f4-9a48-410e-a7f2-a0b275cd9002",
+		"name": "F1-API-Testing-Improved",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Current Race Details (Setup)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// ---------------------------------------------------",
+							"// 1. BASIC STATUS CHECKS",
+							"// ---------------------------------------------------",
+							"pm.test(\"Status code 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Response is JSON\", () => pm.response.to.be.json);",
+							"",
+							"// ---------------------------------------------------",
+							"// 2. SAVE DYNAMIC VARIABLES (SETUP)",
+							"// ---------------------------------------------------",
+							"pm.environment.set(\"season\", String(jsonData.season));",
+							"pm.test(\"Saved season variable\", () => pm.expect(pm.environment.get(\"season\")).to.exist);",
+							"",
+							"// Check if we have race data to save",
+							"if (jsonData.race && Array.isArray(jsonData.race) && jsonData.race.length > 0) {",
+							"    const currentRace = jsonData.race[0];",
+							"",
+							"    // Save Core Variables",
+							"    if (currentRace.raceId) pm.environment.set(\"race_id\", currentRace.raceId);",
+							"    if (currentRace.round) pm.environment.set(\"round\", String(currentRace.round));",
+							"    if (currentRace.circuit && currentRace.circuit.circuitId) {",
+							"        pm.environment.set(\"circuit_id\", currentRace.circuit.circuitId);",
+							"    }",
+							"",
+							"    pm.test(\"Saved race_id, round, and circuit_id\", () => {",
+							"        pm.expect(pm.environment.get(\"race_id\")).to.exist;",
+							"        pm.expect(pm.environment.get(\"round\")).to.exist;",
+							"        pm.expect(pm.environment.get(\"circuit_id\")).to.exist;",
+							"    });",
+							"",
+							"    // ---------------------------------------------------",
+							"    // 3. VALIDATE CIRCUIT MAP (Early Warning)",
+							"    // ---------------------------------------------------",
+							"    if (currentRace.circuit) {",
+							"        const c = currentRace.circuit;",
+							"        // Check if map URL exists (Crucial for UI)",
+							"        if (c.url_map || c.Location?.map) {",
+							"             pm.test(\"Current Race has Map Image URL\", () => {",
+							"                const mapUrl = c.url_map || c.Location.map;",
+							"                pm.expect(mapUrl).to.be.a(\"string\").and.to.include(\"http\");",
+							"             });",
+							"        } else {",
+							"            console.warn(`⚠️ Warning: 'Current' race (${currentRace.raceName}) is missing a Map URL.`);",
+							"        }",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/current",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"current"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Races of a Season",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// ---------------------------------------------------",
+							"// 1. BASIC CHECKS",
+							"// ---------------------------------------------------",
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Response season matches requested season\", () => {",
+							"    pm.expect(String(jsonData.season)).to.eql(String(pm.environment.get(\"season\")));",
+							"});",
+							"",
+							"// ---------------------------------------------------",
+							"// 2. DATA INTEGRITY (Check WHOLE List)",
+							"// ---------------------------------------------------",
+							"pm.test(\"Races array is not empty\", () => {",
+							"    pm.expect(jsonData.races).to.be.an(\"array\").that.is.not.empty;",
+							"});",
+							"",
+							"// Verify CRITICAL fields exist for EVERY race in the calendar",
+							"pm.test(\"All races have Name, Date, and Circuit\", () => {",
+							"    jsonData.races.forEach(race => {",
+							"        pm.expect(race).to.have.property(\"raceName\").that.is.not.empty;",
+							"        pm.expect(race).to.have.property(\"date\").that.is.not.empty;",
+							"        pm.expect(race).to.have.property(\"circuit\").that.is.an(\"object\");",
+							"    });",
+							"});",
+							"",
+							"// ---------------------------------------------------",
+							"// 3. SAVE FIRST RACE (Fallback Setup)",
+							"// ---------------------------------------------------",
+							"const firstRace = jsonData.races[0];",
+							"pm.environment.set(\"round\", firstRace.round);",
+							"pm.environment.set(\"race_id\", firstRace.raceId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/{{season}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"{{season}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Race by Round (Consolidated Validation)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// ---------------------------------------------------",
+							"// 1. BASIC STATUS & STRUCTURE",
+							"// ---------------------------------------------------",
+							"pm.test(\"Status code 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Root object contains season and round\", () => {",
+							"    pm.expect(jsonData).to.have.property(\"season\");",
+							"    pm.expect(jsonData).to.have.property(\"round\");",
+							"});",
+							"",
+							"const race = jsonData.race[0];",
+							"const raceName = race.raceName || \"\";",
+							"const isTesting = raceName.includes(\"Testing\"); // 🚩 Detect Testing",
+							"",
+							"console.log(`Analyzing: ${raceName} | Is Testing? ${isTesting}`);",
+							"",
+							"// ---------------------------------------------------",
+							"// 2. VALIDATE VISUALS (Circuit & Map)",
+							"// ---------------------------------------------------",
+							"const circuit = race.circuit;",
+							"pm.test(\"Race has circuit object\", () => pm.expect(circuit).to.be.an(\"object\"));",
+							"",
+							"// Smart Map Check",
+							"if (circuit.url_map || circuit.Location?.map) {",
+							"    pm.test(\"Circuit Map Image URL exists\", () => {",
+							"        const mapUrl = circuit.url_map || circuit.Location.map;",

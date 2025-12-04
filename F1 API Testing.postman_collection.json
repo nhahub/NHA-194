@@ -1,0 +1,192 @@
+{
+	"info": {
+		"_postman_id": "105c3aba-47e8-439f-b55d-9b145d96439b",
+		"name": "F1 API Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48084993",
+		"_collection_link": "https://omar2006ramadan-4963843.postman.co/workspace/omar-mohamed's-Workspace~ce6b7f04-51b3-465e-8d2b-aa04ea62082f/collection/48084993-105c3aba-47e8-439f-b55d-9b145d96439b?action=share&source=collection_link&creator=48084993"
+	},
+	"item": [
+		{
+			"name": "Get All Drivers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Total drivers >= 20\", function () {\r",
+							"    let json = pm.response.json();\r",
+							"    pm.expect(json.total).to.be.at.least(20);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Drivers array exists\", function () {\r",
+							"    let json = pm.response.json();\r",
+							"    pm.expect(json.drivers).to.be.an(\"array\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/drivers?limit=20&offset=0",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"drivers"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Driver Standings 2024",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"First driver is Verstappen\", function () {\r",
+							"    let json = pm.response.json();\r",
+							"    let firstDriver = json.drivers_championship[0].driver;\r",
+							"    pm.expect(firstDriver.surname).to.eql(\"Verstappen\");\r",
+							"    pm.expect(firstDriver.name).to.eql(\"Max\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://f1api.dev/api/2021/drivers-championship",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2021",
+						"drivers-championship"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Constructor Standings 2024",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"First constructor is Mercedes\", function () {\r",
+							"    let json = pm.response.json();\r",
+							"    let firstTeam = json.constructors_championship[0].team;\r",
+							"    pm.expect(firstTeam.teamName).to.eql(\"Mercedes Formula 1 Team\");\r",
+							"    pm.expect(firstTeam.country).to.eql(\"Germany\");\r",
+							"});\r",
+							"pm.test(\"First constructor points and wins\", function () {\r",
+							"    let json = pm.response.json();\r",
+							"    let firstConstructor = json.constructors_championship[0];\r",
+							"    pm.expect(firstConstructor.points).to.eql(613.5);\r",
+							"    pm.expect(firstConstructor.wins).to.eql(9);\r",
+							"});\r",
+							"let json = pm.response.json();\r",
+							"pm.test(\"Total constructors = 10\", function () {\r",
+							"    pm.expect(json.constructors_championship.length).to.eql(10);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://f1api.dev/api/2021/constructors-championship",
+					"protocol": "https",
+					"host": [
+						"f1api",
+						"dev"
+					],
+					"path": [
+						"api",
+						"2021",
+						"constructors-championship"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"value": ""
+		},
+		{
+			"key": "base_url",
+			"value": ""
+		}
+	]
+}
